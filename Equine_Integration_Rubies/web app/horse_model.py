@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from datetime import timedelta
 
 # Load and preprocess the data once
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -56,14 +57,38 @@ def summarize_recent_7_days(df_horse):
                 summary += f"  {gait.capitalize()} - Load: {load:.1f} | ACWR: {acwr:.2f} | Zone: {zone}\n"
     return summary
 
+
+def summarize_weekly_averages(df_horse):
+    df_sorted = df_horse.sort_values("Date")
+    df_sorted['Week'] = df_sorted['Date'].dt.to_period('W').apply(lambda r: r.start_time)
+
+    weeks = sorted(df_sorted['Week'].unique())[-6:-1]  # Previous 5 full weeks
+
+    summary = "\nPrevious 5 Weeks Overview:\n"
+
+    for week_start in weeks:
+        week_data = df_sorted[df_sorted['Week'] == week_start]
+        if len(week_data) == 0:
+            continue
+        avg_load = week_data["iTrimp_overall_Load_Today"].mean()
+        avg_acwr = week_data["iTrimp_overall_ACWR"].mean()
+        zone = get_risk_zone(avg_acwr)
+        week_end = week_start + timedelta(days=6)
+        summary += f"Week ({week_start.date()} to {week_end.date()}): Avg Load: {avg_load:.1f} | Avg ACWR: {avg_acwr:.2f} | Zone: {zone}\n"
+    return summary
+
+
 def get_summary_for_horse(horse_id):
-    """Filter dataset to a horse and return its 7-day summary."""
+    """Filter dataset to a horse and return a combined summary."""
     df_horse = df_clean[df_clean["HorseID"] == int(horse_id)].copy()
     print(f"Columns for horse {horse_id} :", df_horse.columns)
     if df_horse.empty:
         return "No data available for this horse."
 
     try:
-        return summarize_recent_7_days(df_horse)
+        summary1 = summarize_recent_7_days(df_horse)
+        summary2 = summarize_weekly_averages(df_horse)
+        return summary1 + "\n" + summary2
     except Exception as e:
         return f"Summary generation failed: {str(e)}"
+
