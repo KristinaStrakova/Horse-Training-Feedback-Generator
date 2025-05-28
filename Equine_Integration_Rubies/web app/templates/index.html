@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Horse Feedback Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="banner">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo" class="logo">
+        <h1>Welcome to the Horse Feedback Generator</h1>
+    </header>
+
+    <main class="page-layout">
+        <div class="main-container">
+            <!-- Input Form -->
+            <form id="horse-form" method="POST" action="/run_model" class="card">
+                <label for="horse-id">Select Horse ID:</label>
+                <select name="horse_id" id="horse-id">
+                    {% for horse_id in horse_ids %}
+                        <option value="{{ horse_id }}">{{ horse_id }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Run Model</button>
+            </form>
+            <div id="loading" style="display:none; text-align:center; color:#5CE1E6;">
+              <strong>Loading...</strong>
+            </div>
+            <!-- Output Section -->
+            <div class="card" id="result">
+                <label>Summary:</label>
+                <pre id="summary" class="output-box">[Summary will appear here]</pre>
+
+                <label>Feedback:</label>
+                <pre id="feedback" class="output-box">[Feedback will appear here]</pre>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+            <section class="instructions">
+                <button class="collapsible">How It Works</button>
+                <div class="content">
+                    <p>This tool allows you to interact with an AI model that analyzes horse training data and returns smart feedback.</p>
+                    <p><strong>Steps:</strong></p>
+                    <ul>
+                        <li>Select a Horse ID from the dropdown</li>
+                        <li>Click "Run Model"</li>
+                        <li>View the generated summary and trainer feedback</li>
+                    </ul>
+                </div>
+            </section>
+        </aside>
+    </main>
+
+    <script>
+    // Toggle collapsible instruction box
+    const collapsible = document.querySelector('.collapsible');
+    const content = document.querySelector('.content');
+
+    collapsible.addEventListener('click', function () {
+        this.classList.toggle('active');
+        content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+    });
+
+    // Form and output elements
+    const form = document.getElementById("horse-form");
+    const resultDiv = document.getElementById("result");
+    const summaryPre = document.getElementById("summary");
+    const feedbackPre = document.getElementById("feedback");
+    const loading = document.getElementById("loading");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Show loading, hide previous results
+        loading.style.display = "block";
+        resultDiv.style.display = "none";
+
+        const formData = new FormData(form);
+
+        try {
+            const res = await fetch("/run_model", {
+                method: "POST",
+                body: formData
+            });
+
+            if (!res.ok) throw new Error("Failed to fetch");
+
+            const data = await res.json();
+
+            summaryPre.textContent = data.summary || "[No summary available]";
+            feedbackPre.textContent = data.feedback || "[No feedback available]";
+        } catch (error) {
+            summaryPre.textContent = "[Error fetching summary]";
+            feedbackPre.textContent = "[Error fetching feedback]";
+            console.error("Error during fetch:", error);
+        } finally {
+            loading.style.display = "none";
+            resultDiv.style.display = "block";
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #07384D;
+    margin: 40px;
+    color: #ffffff;
+}
+
+/* Header */
+header.banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.logo {
+    width: 150px;
+    height: 150px;           /* Make it square */
+    object-fit: cover;       /* Crop the image to fill the container */
+    border-radius: 50%;      /* Make it a circle */
+}
+
+
+.banner h1 {
+    color: #5CE1E6;
+    font-size: 2em;
+    margin: 0;
+    text-align: center;
+}
+
+/* Layout */
+.page-layout {
+    display: flex;
+    justify-content: flex-start;   /* Align content to the start of flex container */
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: nowrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding-left: 125px;  /* ✅ This will shift the entire content slightly to the right */
+}
+
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    flex-grow: 1;
+    max-width: 700px;
+    width: 100%;
+}
+
+/* Card blocks for input and output */
+.card {
+    background-color: #F3F5F9;
+    padding: 20px;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 600px;
+    min-width: 400px; /* ✅ prevent overly narrow cards */
+    box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #07384D;
+}
+
+
+/* Input and Output areas */
+textarea,
+.output-box {
+    width: 100%;
+    font-size: 1rem;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #F3F5F9;
+    color: #07384D;
+}
+
+.output-box {
+    min-height: 100px;
+    width: 100%;
+    font-size: 1rem;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #F3F5F9;
+    color: #07384D;
+
+    white-space: pre-wrap;     /* Wrap long lines */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow-y: auto;          /* Scroll vertically if too long */
+}
+
+
+/* Buttons */
+button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #5CE1E6;
+    color: #07384D;
+    border: none;
+    border-radius: 20px;
+}
+
+.card button {
+    align-self: flex-start;
+}
+
+/* Sidebar */
+.sidebar {
+    max-width: 260px;
+    width: 100%;
+    margin-top: 0;
+    align-self: flex-start;
+}
+
+/* Collapsible instructions */
+.collapsible {
+    background-color: #309FAC;
+    color: white;
+    cursor: pointer;
+    padding: 12px;
+    width: 100%;
+    max-width: 260px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 1.1rem;
+    border-radius: 5px;
+}
+
+.collapsible::after {
+    content: " ▼";
+    float: right;
+}
+
+.collapsible.active::after {
+    content: " ▲";
+}
+
+.content {
+    padding: 0 18px;
+    width: 100%;
+    max-width: 250px;
+    display: none;
+    overflow: hidden;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    margin-top: 10px;
+    color: #07384D;
+}
