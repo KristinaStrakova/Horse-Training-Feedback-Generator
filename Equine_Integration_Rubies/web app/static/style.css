@@ -161,3 +161,28 @@ button {
     margin-top: 10px;
     color: #07384D;
 }
+
+#loading {
+    display: none;
+    text-align: center;
+    color: #5CE1E6;
+    margin-top: 1em;
+}
+
+.chart-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.chart-container h3 {
+    color: #5CE1E6;
+    margin-bottom: 10px;
+}
+
+.training-chart {
+    width: 95%;
+    max-width: 1000px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+

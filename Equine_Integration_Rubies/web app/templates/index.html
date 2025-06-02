@@ -18,21 +18,29 @@
                 <label for="horse-id">Select Horse ID:</label>
                 <select name="horse_id" id="horse-id">
                     {% for horse_id in horse_ids %}
-                        <option value="{{ horse_id }}">{{ horse_id }}</option>
+                        <option value="{{ horse_id }}" {% if horse_id == selected_horse_id %}selected{% endif %}>{{ horse_id }}</option>
                     {% endfor %}
                 </select>
                 <button type="submit">Run Model</button>
             </form>
-            <div id="loading" style="display:none; text-align:center; color:#5CE1E6;">
-              <strong>Loading...</strong>
-            </div>
+
             <!-- Output Section -->
             <div class="card" id="result">
+
+                {% if chart_path %}
+                <div class="chart-container">
+                    <h3>Training Summary Graph</h3>
+                    <img src="{{ url_for('static', filename=chart_path) }}"
+                         alt="Training Summary Chart"
+                         class="training-chart">
+                </div>
+                {% endif %}
+
                 <label>Summary:</label>
-                <pre id="summary" class="output-box">[Summary will appear here]</pre>
+                <pre id="summary" class="output-box">{{ summary_text or '[Summary will appear here]' }}</pre>
 
                 <label>Feedback:</label>
-                <pre id="feedback" class="output-box">[Feedback will appear here]</pre>
+                <pre id="feedback" class="output-box">{{ feedback or '[Feedback will appear here]' }}</pre>
             </div>
         </div>
 
@@ -61,45 +69,6 @@
         this.classList.toggle('active');
         content.style.display = (content.style.display === 'block') ? 'none' : 'block';
     });
-
-    // Form and output elements
-    const form = document.getElementById("horse-form");
-    const resultDiv = document.getElementById("result");
-    const summaryPre = document.getElementById("summary");
-    const feedbackPre = document.getElementById("feedback");
-    const loading = document.getElementById("loading");
-
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        // Show loading, hide previous results
-        loading.style.display = "block";
-        resultDiv.style.display = "none";
-
-        const formData = new FormData(form);
-
-        try {
-            const res = await fetch("/run_model", {
-                method: "POST",
-                body: formData
-            });
-
-            if (!res.ok) throw new Error("Failed to fetch");
-
-            const data = await res.json();
-
-            summaryPre.textContent = data.summary || "[No summary available]";
-            feedbackPre.textContent = data.feedback || "[No feedback available]";
-        } catch (error) {
-            summaryPre.textContent = "[Error fetching summary]";
-            feedbackPre.textContent = "[Error fetching feedback]";
-            console.error("Error during fetch:", error);
-        } finally {
-            loading.style.display = "none";
-            resultDiv.style.display = "block";
-        }
-    });
-</script>
-
+    </script>
 </body>
 </html>

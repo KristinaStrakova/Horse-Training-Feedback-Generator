@@ -5,15 +5,12 @@ from datetime import timedelta
 # Load and preprocess the data once
 base_dir = os.path.dirname(os.path.abspath(__file__))
 data_folder = os.path.join(base_dir, "data")
-
-# This joins the data subdirectory and file name
 data_path = os.path.join(data_folder, "Horse_Readiness_CLEANED.json")
 
 print("Looking inside:", data_folder)
 print("Files found:", os.listdir(data_folder))
 print("Looking for file at:", data_path)
 
-# Now load the file using the correct absolute path
 with open(data_path, 'r') as file:
     df_clean = pd.read_json(file)
 
@@ -57,7 +54,6 @@ def summarize_recent_7_days(df_horse):
                 summary += f"  {gait.capitalize()} - Load: {load:.1f} | ACWR: {acwr:.2f} | Zone: {zone}\n"
     return summary
 
-
 def summarize_weekly_averages(df_horse):
     df_sorted = df_horse.sort_values("Date")
     df_sorted['Week'] = df_sorted['Date'].dt.to_period('W').apply(lambda r: r.start_time)
@@ -77,7 +73,6 @@ def summarize_weekly_averages(df_horse):
         summary += f"Week ({week_start.date()} to {week_end.date()}): Avg Load: {avg_load:.1f} | Avg ACWR: {avg_acwr:.2f} | Zone: {zone}\n"
     return summary
 
-
 def get_summary_for_horse(horse_id):
     """Filter dataset to a horse and return a combined summary."""
     df_horse = df_clean[df_clean["HorseID"] == int(horse_id)].copy()
@@ -92,3 +87,9 @@ def get_summary_for_horse(horse_id):
     except Exception as e:
         return f"Summary generation failed: {str(e)}"
 
+
+def get_horse_dataframe(horse_id):
+    """Return the full dataframe for a specific horse, used for plotting."""
+    df_horse = df_clean[df_clean["HorseID"] == int(horse_id)].copy()
+    df_horse["Date"] = pd.to_datetime(df_horse["Date"], errors='coerce')
+    return df_horse
