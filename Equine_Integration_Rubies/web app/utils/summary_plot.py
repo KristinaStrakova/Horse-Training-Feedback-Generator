@@ -15,8 +15,8 @@ def plot_training_summary(df_horse, save_path):
 
     # Prepare last 3 weeks
     df_horse["Week"] = df_horse["Date"].dt.to_period("W").apply(lambda r: r.start_time)
-    last_3_weeks = df_horse["Week"].dropna().unique()[-3:]
-    df_weekly = df_horse[df_horse["Week"].isin(last_3_weeks)]
+    last_5_weeks = df_horse["Week"].dropna().unique()[-5:]
+    df_weekly = df_horse[df_horse["Week"].isin(last_5_weeks)]
 
     weekly_agg = df_weekly.groupby("Week").agg({
         **{f"iTrimp_{g}_Load_Today": 'mean' for g in gaits},
@@ -46,7 +46,7 @@ def plot_training_summary(df_horse, save_path):
 
     for gait in gaits:
         axs[2].plot(weeks, weekly_agg[f"iTrimp_{gait}_Load_Today"], marker='o', label=gait.capitalize())
-    axs[2].set_title("Weekly Average Load per Gait (Last 3 Weeks)")
+    axs[2].set_title("Weekly Average Load per Gait (Last 5 Weeks)")
     axs[2].set_ylabel("Average Load")
     axs[2].legend()
     axs[2].grid(True)
@@ -56,7 +56,7 @@ def plot_training_summary(df_horse, save_path):
     axs[3].axhspan(0, 0.8, color='blue', alpha=0.1, label='Undertrained')
     axs[3].axhspan(0.8, 1.5, color='green', alpha=0.1, label='Optimal')
     axs[3].axhspan(1.5, 2.0, color='red', alpha=0.1, label='Overtrained')
-    axs[3].set_title("Weekly Average ACWR per Gait (Last 3 Weeks)")
+    axs[3].set_title("Weekly Average ACWR per Gait (Last 5 Weeks)")
     axs[3].set_ylabel("Average ACWR")
     axs[3].legend()
     axs[3].grid(True)
