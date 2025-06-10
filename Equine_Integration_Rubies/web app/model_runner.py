@@ -14,13 +14,15 @@ The data includes:
 
 Guidelines:
 - Comment on the overall training balance.
+- Comment on each gait (walk, trot, canter, galop) based on Load and ACWR for the current week.
 - Point out gaits that are undertrained or overtrained (based on Zone).
 - Note that some days have Load = 0 (recovery days).
 - Give clear advice on adjusting training or giving rest.
 
 Provide only the feedback with explanations. No summaries.
 
-Horse Summary:
+
+--- Training Summary Start ---
 {summary_text}
 --- Training Summary End ---
 
@@ -40,7 +42,7 @@ Trainer Feedback:
 
     # Run Mistral model via Ollama CLI
     result = subprocess.run(
-        [ollama_path, "run", "mistral"],
+        [ollama_path, "run", "gemma:7b"],
         input=prompt.encode(),
         stdout=subprocess.PIPE
     )

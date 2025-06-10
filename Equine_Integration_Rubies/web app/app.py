@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from horse_model import get_all_horse_ids, get_summary_for_horse, get_horse_dataframe
 from model_runner import generate_local_feedback
 from utils.summary_plot import plot_training_summary
+from utils.summary_plot_bars import plot_training_summary_bars
 import os
 
 app = Flask(__name__)
@@ -26,11 +27,11 @@ def run_model():
 
     if summary_text.startswith("No data available") or "Summary generation failed" in summary_text:
         return render_template("index.html",
-                               horse_ids=horse_ids,
-                               summary_text="[Error fetching summary]",
-                               feedback="[Error fetching feedback]",
-                               chart_path=None,
-                               horse_id=horse_id)
+                       horse_ids=horse_ids,
+                       summary_text=summary_text,
+                       feedback=feedback,
+                       chart_path=f"charts/{chart_filename}",
+                       selected_horse_id=horse_id)
 
     feedback = generate_local_feedback(summary_text)
 
@@ -40,13 +41,15 @@ def run_model():
     chart_path = os.path.join("static", "charts", chart_filename)
     plot_training_summary(df_horse, chart_path)
 
+    plot_training_summary_bars(df_horse, output_dir="static/charts", horse_id=horse_id)
+
     return render_template("index.html",
                        horse_ids=horse_ids,
                        summary_text=summary_text,
                        feedback=feedback,
                        chart_path=f"charts/{chart_filename}",
-                       horse_id=horse_id,
                        selected_horse_id=horse_id)
+
 
 
 if __name__ == '__main__':

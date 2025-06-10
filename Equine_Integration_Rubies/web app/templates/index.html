@@ -13,62 +13,127 @@
 
     <main class="page-layout">
         <div class="main-container">
-            <!-- Input Form -->
-            <form id="horse-form" method="POST" action="/run_model" class="card">
-                <label for="horse-id">Select Horse ID:</label>
-                <select name="horse_id" id="horse-id">
-                    {% for horse_id in horse_ids %}
-                        <option value="{{ horse_id }}" {% if horse_id == selected_horse_id %}selected{% endif %}>{{ horse_id }}</option>
-                    {% endfor %}
+
+            <!-- FORM SECTION -->
+            <div class="form-sidebar-wrapper">
+                <form id="horse-form" method="POST" action="/run_model" class="card narrow-card">
+                    <label for="horse-id">Select Horse ID:</label>
+                    <select name="horse_id" id="horse-id">
+                        <option value="" disabled selected>-- Select Horse ID --</option>
+                        {% for hid in horse_ids %}
+                            <option value="{{ hid }}">{{ hid }}</option>
+                        {% endfor %}
+                    </select>
+
+
+                    <button type="submit">Receive feedback</button>
+                </form>
+
+                <div id="loading-indicator" style="display: none; color: #5CE1E6; font-weight: bold; margin: 10px 0;">
+                    Loading... Please wait.
+                </div>
+            </div>
+
+            <!-- HORSE HEADING -->
+            {% if selected_horse_id %}
+                <h2 class="horse-heading">Results for Horse ID: {{ selected_horse_id }}</h2>
+            {% endif %}
+
+            <!-- FEEDBACK SECTION -->
+            {% if feedback %}
+                <div id="feedback-section" class="card">
+                    <label>Feedback:</label>
+                    <pre id="feedback" class="output-box">{{ feedback | safe }}</pre>
+
+                </div>
+            {% endif %}
+
+            <!-- VIEW MODE TOGGLE -->
+            {% if feedback %}
+            <div class="view-toggle">
+                <label for="view-mode">View Mode:</label>
+                <select id="view-mode">
+                    <option value="graphs">Graphs</option>
+                    <option value="summary">Summary</option>
                 </select>
-                <button type="submit">Run Model</button>
-            </form>
+            </div>
+            {% endif %}
 
-            <!-- Output Section -->
-            <div class="card" id="result">
 
+            <!-- GRAPHS -->
+            <div id="graph-section" style="display: block;">
                 {% if chart_path %}
-                <div class="chart-container">
-                    <h3>Training Summary Graph</h3>
-                    <img src="{{ url_for('static', filename=chart_path) }}"
-                         alt="Training Summary Chart"
-                         class="training-chart">
+                <div class="chart-grid">
+                    <div class="chart-block">
+                        <h3>Recent 7 Days - Load per Gait</h3>
+                        <img src="{{ url_for('static', filename='charts/bars_load_' + selected_horse_id + '.png') }}"
+                            alt="Recent Load Bar Chart" class="training-chart">
+                        <p class="chart-explanation">
+                            This chart displays daily training load per gait over the past 7 days. Use it to compare effort levels across different gait types.
+                        </p>
+                    </div>
+                    <div class="chart-block">
+                        <h3>Recent 7 Days - ACWR per Gait</h3>
+                        <img src="{{ url_for('static', filename='charts/bars_acwr_' + selected_horse_id + '.png') }}"
+                            alt="Recent ACWR Bar Chart" class="training-chart">
+                        <p class="chart-explanation">
+                            This chart shows the Acute:Chronic Workload Ratio for each gait. Values between 0.8 and 1.5 are considered optimal.
+                        </p>
+                    </div>
+                    <div class="chart-block">
+                        <h3>Weekly Avg Load per Gait (Last 5 Weeks)</h3>
+                        <img src="{{ url_for('static', filename='charts/bars_weekly_load_' + selected_horse_id + '.png') }}"
+                            alt="Weekly Load Bar Chart" class="training-chart">
+                        <p class="chart-explanation">
+                            Average training load per gait across the past 5 weeks. Helps evaluate long-term training trends.
+                        </p>
+                    </div>
+                    <div class="chart-block">
+                        <h3>Weekly Avg ACWR per Gait (Last 5 Weeks)</h3>
+                        <img src="{{ url_for('static', filename='charts/bars_weekly_acwr_' + selected_horse_id + '.png') }}"
+                            alt="Weekly ACWR Bar Chart" class="training-chart">
+                        <p class="chart-explanation">
+                            Average ACWR across gaits over the past 5 weeks. It highlights whether horses have been optimally trained weekly.
+                        </p>
+                    </div>
                 </div>
                 {% endif %}
-
-                <label>Summary:</label>
-                <pre id="summary" class="output-box">{{ summary_text or '[Summary will appear here]' }}</pre>
-
-                <label>Feedback:</label>
-                <pre id="feedback" class="output-box">{{ feedback or '[Feedback will appear here]' }}</pre>
             </div>
-        </div>
 
-        <aside class="sidebar">
-            <section class="instructions">
-                <button class="collapsible">How It Works</button>
-                <div class="content">
-                    <p>This tool allows you to interact with an AI model that analyzes horse training data and returns smart feedback.</p>
-                    <p><strong>Steps:</strong></p>
-                    <ul>
-                        <li>Select a Horse ID from the dropdown</li>
-                        <li>Click "Run Model"</li>
-                        <li>View the generated summary and trainer feedback</li>
-                    </ul>
-                </div>
-            </section>
-        </aside>
+            <!-- SUMMARY -->
+            <div id="summary-section" style="display: none;" class="card">
+                <label>Summary:</label>
+                <pre id="summary" class="output-box">{{ summary_text | safe }}</pre>
+
+            </div>
+
+        </div>
     </main>
 
     <script>
-    // Toggle collapsible instruction box
-    const collapsible = document.querySelector('.collapsible');
-    const content = document.querySelector('.content');
+        // View mode toggle
+        const viewToggle = document.getElementById('view-mode');
+        const graphSection = document.getElementById('graph-section');
+        const summarySection = document.getElementById('summary-section');
 
-    collapsible.addEventListener('click', function () {
-        this.classList.toggle('active');
-        content.style.display = (content.style.display === 'block') ? 'none' : 'block';
-    });
+        viewToggle.addEventListener('change', () => {
+            const mode = viewToggle.value;
+            graphSection.style.display = mode === 'graphs' ? 'block' : 'none';
+            summarySection.style.display = mode === 'summary' ? 'block' : 'none';
+        });
+
+        // Form loading logic
+        const form = document.getElementById('horse-form');
+        const loading = document.getElementById('loading-indicator');
+        const feedbackSection = document.getElementById('feedback-section');
+        const viewToggleDiv = document.querySelector('.view-toggle');
+
+        const hideWhileLoading = [feedbackSection, graphSection, summarySection, viewToggleDiv];
+
+        form.addEventListener('submit', () => {
+            loading.style.display = 'block';
+            hideWhileLoading.forEach(el => el && (el.style.display = 'none'));
+        });
     </script>
 </body>
 </html>

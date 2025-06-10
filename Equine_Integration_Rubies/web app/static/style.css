@@ -16,11 +16,10 @@ header.banner {
 
 .logo {
     width: 150px;
-    height: 150px;           /* Make it square */
-    object-fit: cover;       /* Crop the image to fill the container */
-    border-radius: 50%;      /* Make it a circle */
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
 }
-
 
 .banner h1 {
     color: #5CE1E6;
@@ -32,35 +31,28 @@ header.banner {
 /* Layout */
 .page-layout {
     display: flex;
-    justify-content: flex-start;   /* Align content to the start of flex container */
     align-items: flex-start;
-    gap: 40px;
-    flex-wrap: nowrap;
-    max-width: 1200px;
+    justify-content: center;
+    max-width: 1800px;
     margin: 0 auto;
+    padding: 0 20px;
     width: 100%;
-    padding-left: 125px;  /* ✅ This will shift the entire content slightly to the right */
 }
 
-
 .main-container {
+    flex-grow: 1;
+    max-width: 1600px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    flex-grow: 1;
-    max-width: 700px;
-    width: 100%;
 }
 
-/* Card blocks for input and output */
 .card {
     background-color: #F3F5F9;
     padding: 20px;
     border-radius: 5px;
     width: 100%;
-    max-width: 600px;
-    min-width: 400px; /* ✅ prevent overly narrow cards */
     box-sizing: border-box;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
@@ -70,39 +62,22 @@ header.banner {
     color: #07384D;
 }
 
-
-/* Input and Output areas */
+/* Input & Output */
 textarea,
 .output-box {
     width: 100%;
     font-size: 1rem;
-    padding: 10px;
-    box-sizing: border-box;
+    padding: 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #F3F5F9;
     color: #07384D;
-}
-
-.output-box {
-    min-height: 100px;
-    width: 100%;
-    font-size: 1rem;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #F3F5F9;
-    color: #07384D;
-
-    white-space: pre-wrap;     /* Wrap long lines */
+    white-space: pre-wrap;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    overflow-y: auto;          /* Scroll vertically if too long */
+    overflow-y: auto;
 }
 
-
-/* Buttons */
 button {
     padding: 10px 20px;
     font-size: 1rem;
@@ -119,20 +94,18 @@ button {
 
 /* Sidebar */
 .sidebar {
-    max-width: 260px;
+    flex: 0 0 auto;
     width: 100%;
-    margin-top: 0;
+    max-width: 320px;
     align-self: flex-start;
 }
 
-/* Collapsible instructions */
 .collapsible {
     background-color: #309FAC;
     color: white;
     cursor: pointer;
     padding: 12px;
     width: 100%;
-    max-width: 260px;
     border: none;
     text-align: left;
     outline: none;
@@ -162,27 +135,106 @@ button {
     color: #07384D;
 }
 
-#loading {
-    display: none;
-    text-align: center;
-    color: #5CE1E6;
-    margin-top: 1em;
+/* Graphs */
+.chart-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 40px;
+    width: 100%;
 }
 
-.chart-container {
-    text-align: center;
-    margin-bottom: 20px;
+.chart-block {
+    flex: 1 1 48%;
+    background-color: #F3F5F9;
+    border-radius: 8px;
+    padding: 15px;
+    box-sizing: border-box;
+    color: #5CE1E6;
 }
 
-.chart-container h3 {
+.chart-explanation {
+    font-size: 0.95em;
+    margin-top: 10px;
+    color: #07384D;
+}
+
+.chart-block h3 {
     color: #5CE1E6;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .training-chart {
-    width: 95%;
-    max-width: 1000px;
+    width: 100%;
+    max-width: 900px;
+    display: block;
+    margin: 0 auto;
     border: 1px solid #ccc;
-    padding: 10px;
+    border-radius: 6px;
 }
+
+.view-toggle {
+    margin: 30px 0 20px 0; 
+    padding: 10px 15px;
+    background-color: #F3F5F9;
+    border-radius: 6px;
+    color: #07384D;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.spacer {
+    height: 30px;
+}
+
+/* Form & Sidebar layout */
+.form-sidebar-wrapper {
+    display: flex;
+    justify-content: center;  
+    gap: 40px;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+
+.narrow-card {
+    flex: 0 1 50%;
+    max-width: 600px;
+    min-width: 350px;
+}
+
+.horse-heading {
+    color: #5CE1E6;
+    margin: 15px 0;
+    font-size: 1.3rem;
+}
+pre.output-box {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow-x: auto;
+    max-width: 100%;
+    display: block;
+    padding: 20px;
+    line-height: 1.5;
+    font-family: Consolas, monospace;
+}
+
+/* Constrain width of feedback and summary content */
+#feedback,
+#summary {
+    max-width: 800px;   /* adjust if you prefer e.g. 800px */
+    margin: 0 auto;
+}
+#feedback-section,
+#summary-section {
+    max-width: 900px;  /* or whatever width you prefer */
+    margin: 0 auto;
+}
+
 
