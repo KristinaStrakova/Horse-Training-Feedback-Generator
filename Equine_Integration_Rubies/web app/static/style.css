@@ -175,16 +175,19 @@ button {
 }
 
 .view-toggle {
-    margin: 30px 0 20px 0; 
+    margin: 30px 0 20px 0;
     padding: 10px 15px;
     background-color: #F3F5F9;
     border-radius: 6px;
     color: #07384D;
     font-weight: bold;
-    display: flex;
+    display: inline-flex;     /* 🔧 Changed from flex to inline-flex */
     align-items: center;
     gap: 10px;
+    justify-content: center;
+    max-width: 100%;          /* Optional: Prevent overflow */
 }
+
 
 
 .spacer {
@@ -212,6 +215,7 @@ button {
     color: #5CE1E6;
     margin: 15px 0;
     font-size: 1.3rem;
+    text-align: center;
 }
 pre.output-box {
     white-space: pre-wrap;
@@ -236,5 +240,13 @@ pre.output-box {
     max-width: 900px;  /* or whatever width you prefer */
     margin: 0 auto;
 }
+#loading-indicator {
+    font-size: 1.4rem;
+    text-align: center;
+    color: #5CE1E6;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
 
 

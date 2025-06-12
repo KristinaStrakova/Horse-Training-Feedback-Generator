@@ -24,115 +24,48 @@
                             <option value="{{ hid }}">{{ hid }}</option>
                         {% endfor %}
                     </select>
-
-
                     <button type="submit">Receive feedback</button>
                 </form>
-
-                <div id="loading-indicator" style="display: none; color: #5CE1E6; font-weight: bold; margin: 10px 0;">
-                    Loading... Please wait.
-                </div>
             </div>
 
-            <!-- HORSE HEADING -->
-            {% if selected_horse_id %}
-                <h2 class="horse-heading">Results for Horse ID: {{ selected_horse_id }}</h2>
-            {% endif %}
+            <!-- LOADING INDICATOR -->
+            <div id="loading-indicator" style="display: none;">Loading... Please wait.</div>
 
-            <!-- FEEDBACK SECTION -->
-            {% if feedback %}
-                <div id="feedback-section" class="card">
-                    <label>Feedback:</label>
-                    <pre id="feedback" class="output-box">{{ feedback | safe }}</pre>
-
-                </div>
-            {% endif %}
-
-            <!-- VIEW MODE TOGGLE -->
-            {% if feedback %}
-            <div class="view-toggle">
-                <label for="view-mode">View Mode:</label>
-                <select id="view-mode">
-                    <option value="graphs">Graphs</option>
-                    <option value="summary">Summary</option>
-                </select>
-            </div>
-            {% endif %}
-
-
-            <!-- GRAPHS -->
-            <div id="graph-section" style="display: block;">
-                {% if chart_path %}
-                <div class="chart-grid">
-                    <div class="chart-block">
-                        <h3>Recent 7 Days - Load per Gait</h3>
-                        <img src="{{ url_for('static', filename='charts/bars_load_' + selected_horse_id + '.png') }}"
-                            alt="Recent Load Bar Chart" class="training-chart">
-                        <p class="chart-explanation">
-                            This chart displays daily training load per gait over the past 7 days. Use it to compare effort levels across different gait types.
-                        </p>
-                    </div>
-                    <div class="chart-block">
-                        <h3>Recent 7 Days - ACWR per Gait</h3>
-                        <img src="{{ url_for('static', filename='charts/bars_acwr_' + selected_horse_id + '.png') }}"
-                            alt="Recent ACWR Bar Chart" class="training-chart">
-                        <p class="chart-explanation">
-                            This chart shows the Acute:Chronic Workload Ratio for each gait. Values between 0.8 and 1.5 are considered optimal.
-                        </p>
-                    </div>
-                    <div class="chart-block">
-                        <h3>Weekly Avg Load per Gait (Last 5 Weeks)</h3>
-                        <img src="{{ url_for('static', filename='charts/bars_weekly_load_' + selected_horse_id + '.png') }}"
-                            alt="Weekly Load Bar Chart" class="training-chart">
-                        <p class="chart-explanation">
-                            Average training load per gait across the past 5 weeks. Helps evaluate long-term training trends.
-                        </p>
-                    </div>
-                    <div class="chart-block">
-                        <h3>Weekly Avg ACWR per Gait (Last 5 Weeks)</h3>
-                        <img src="{{ url_for('static', filename='charts/bars_weekly_acwr_' + selected_horse_id + '.png') }}"
-                            alt="Weekly ACWR Bar Chart" class="training-chart">
-                        <p class="chart-explanation">
-                            Average ACWR across gaits over the past 5 weeks. It highlights whether horses have been optimally trained weekly.
-                        </p>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- SUMMARY -->
-            <div id="summary-section" style="display: none;" class="card">
-                <label>Summary:</label>
-                <pre id="summary" class="output-box">{{ summary_text | safe }}</pre>
-
+            <!-- RESULTS CONTAINER (replaced dynamically) -->
+            <div id="results-wrapper">
+                {% include "_results.html" %}
             </div>
 
         </div>
     </main>
 
     <script>
-        // View mode toggle
-        const viewToggle = document.getElementById('view-mode');
-        const graphSection = document.getElementById('graph-section');
-        const summarySection = document.getElementById('summary-section');
-
-        viewToggle.addEventListener('change', () => {
-            const mode = viewToggle.value;
-            graphSection.style.display = mode === 'graphs' ? 'block' : 'none';
-            summarySection.style.display = mode === 'summary' ? 'block' : 'none';
-        });
-
-        // Form loading logic
         const form = document.getElementById('horse-form');
         const loading = document.getElementById('loading-indicator');
-        const feedbackSection = document.getElementById('feedback-section');
-        const viewToggleDiv = document.querySelector('.view-toggle');
+        const resultWrapper = document.getElementById('results-wrapper');
 
-        const hideWhileLoading = [feedbackSection, graphSection, summarySection, viewToggleDiv];
-
-        form.addEventListener('submit', () => {
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
             loading.style.display = 'block';
-            hideWhileLoading.forEach(el => el && (el.style.display = 'none'));
+            resultWrapper.innerHTML = '';
+
+            const formData = new FormData(form);
+            const response = await fetch('/run_model', {
+                method: 'POST',
+                body: formData
+            });
+
+            const html = await response.text();
+            resultWrapper.innerHTML = html;
+            loading.style.display = 'none';
+        });
+
+        document.addEventListener('change', function (e) {
+            if (e.target.id === 'view-mode') {
+                const mode = e.target.value;
+                document.getElementById('graph-section').style.display = mode === 'graphs' ? 'block' : 'none';
+                document.getElementById('summary-section').style.display = mode === 'summary' ? 'block' : 'none';
+            }
         });
     </script>
 </body>

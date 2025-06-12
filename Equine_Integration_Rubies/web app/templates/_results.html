@@ -1,0 +1,62 @@
+{% if selected_horse_id %}
+    <h2 class="horse-heading">Results for Horse ID: {{ selected_horse_id }}</h2>
+{% endif %}
+
+{% if feedback %}
+    <div id="feedback-section" class="card">
+        <label>Feedback:</label>
+        <pre id="feedback" class="output-box">{{ feedback | safe }}</pre>
+    </div>
+{% endif %}
+
+{% if feedback %}
+    <div style="text-align: center;">
+        <div class="view-toggle">
+            <label for="view-mode">View Mode:</label>
+            <select id="view-mode">
+                <option value="graphs">Graphs</option>
+                <option value="summary">Summary</option>
+            </select>
+        </div>
+    </div>
+{% endif %}
+
+<div id="graph-section" style="display: block;">
+    {% if chart_path %}
+        <div class="chart-grid">
+            <div class="chart-block">
+                <h3>Recent 7 Days - Load per Gait</h3>
+                <img src="{{ url_for('static', filename='charts/bars_load_' + selected_horse_id + '.png') }}"
+                     alt="Recent Load Bar Chart" class="training-chart">
+                <p class="chart-explanation">This chart displays daily training load per gait over the past 7 days.</p>
+            </div>
+            <div class="chart-block">
+                <h3>Recent 7 Days - ACWR per Gait</h3>
+                <img src="{{ url_for('static', filename='charts/bars_acwr_' + selected_horse_id + '.png') }}"
+                     alt="Recent ACWR Bar Chart" class="training-chart">
+                <p class="chart-explanation">This chart shows the Acute:Chronic Workload Ratio for each gait.</p>
+            </div>
+            <div class="chart-block">
+                <h3>Weekly Avg Load per Gait (Last 5 Weeks)</h3>
+                <img src="{{ url_for('static', filename='charts/bars_weekly_load_' + selected_horse_id + '.png') }}"
+                    alt="Weekly Load Bar Chart" class="training-chart">
+                <p class="chart-explanation">
+                    This chart displays the average training load per gait across the last 5 weeks. Use it to identify long-term trends.
+                </p>
+            </div>
+            <div class="chart-block">
+                <h3>Weekly Avg ACWR per Gait (Last 5 Weeks)</h3>
+                <img src="{{ url_for('static', filename='charts/bars_weekly_acwr_' + selected_horse_id + '.png') }}"
+                    alt="Weekly ACWR Bar Chart" class="training-chart">
+                <p class="chart-explanation">
+                    This chart shows the average Acute:Chronic Workload Ratio for each gait over the past 5 weeks. Helps assess weekly training balance.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<div id="summary-section" style="display: none;" class="card">
+    <label>Summary:</label>
+    <pre id="summary" class="output-box">{{ summary_text | safe }}</pre>
+</div>
