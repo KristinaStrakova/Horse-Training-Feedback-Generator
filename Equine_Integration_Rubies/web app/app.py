@@ -3,7 +3,8 @@ from flask import request, render_template, jsonify
 from horse_model import get_all_horse_ids, get_summary_for_horse, get_horse_dataframe
 from model_runner import generate_local_feedback
 from model_runner import  generate_personalized_feedback
-from utils.summary_plot import plot_training_summary
+#from utils.summary_plot import plot_training_summary
+from utils.summary_plot_bars import plot_training_summary_bars
 from utils.summary_plot_bars import plot_training_summary_bars
 import os
 
@@ -48,15 +49,18 @@ def run_model():
                                chart_path=None,
                                selected_horse_id=horse_id)
 
-    feedback = generate_local_feedback(summary_text)
+    feedback = generate_local_feedback(horse_id, summary_text)
     personalized_feedback = generate_personalized_feedback(horse_id, summary_text)
 
     df_horse = get_horse_dataframe(horse_id)
     chart_filename = f"training_summary_{horse_id}.png"
     chart_path = os.path.join("static", "charts", chart_filename)
 
-    plot_training_summary(df_horse, chart_path)
-    plot_training_summary_bars(df_horse, output_dir="static/charts", horse_id=horse_id)
+    #plot_training_summary(df_horse, chart_path)
+
+
+    is_dutch = int(horse_id) in [257, 483]
+    plot_training_summary_bars(df_horse, output_dir="static/charts", horse_id=horse_id, is_dutch=is_dutch)
 
     return render_template("_results.html",
                            horse_ids=horse_ids,

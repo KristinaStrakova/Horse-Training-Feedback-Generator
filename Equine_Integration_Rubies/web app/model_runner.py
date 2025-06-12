@@ -17,8 +17,45 @@ def get_ollama_path():
     return ollama_path
 
 
-def generate_local_feedback(summary_text):
-    prompt = f"""
+def generate_local_feedback(horse_id, summary_text):
+    horses_nl = [257, 483]  # Extend this list as needed
+
+    if int(horse_id) in horses_nl:
+        prompt = f"""
+Je bent een paardensportwetenschapper. Schrijf op basis van de trainingsgegevens van het paard een kort, duidelijk en nuttig feedbackbericht voor de trainer. Gebruik een vriendelijke, professionele en ondersteunende toon. Vermijd technische termen zoals ACWR; leg dingen uit op een begrijpelijke manier voor dagelijkse praktijktoepassing.
+
+De gegevens omvatten:
+• Datum
+• Trainingsbelasting (Load)
+• ACWR (Acute:Chronische werklastratio)
+• Zone (trainingskwaliteit: ondertraind, optimaal, overtraind)
+
+Structuur van de feedback:
+1. Algemene trainingsbalans:
+    o Geef een korte beoordeling van hoe de training de afgelopen week in totaal is verlopen.
+    o Noem ook of er voldoende balans is tussen inspanning en herstel.
+    o Benoem hersteldagen indien aanwezig.
+2. Gangen die aandacht nodig hebben:
+    o Benoem expliciet welke gangen ondertraind of overtraind zijn volgens de zone-indeling.
+    o Geef eventueel een mogelijke oorzaak of aandachtspunt erbij.
+3. Observaties per gang:
+    o Geef een kort commentaar per gang (stap, draf, arbeidsgalop, galop).
+    o Beschrijf of de inspanning deze week passend was, te laag of te hoog.
+    o Leg zonder vakjargon uit wat dit betekent voor de conditie of het risico op overbelasting.
+4. Advies:
+    o Geef duidelijke en praktische aanbevelingen voor de komende week.
+    o Denk aan: rustmomenten inbouwen, een bepaalde gang juist meer of minder trainen, of letten op signalen van vermoeidheid.
+
+Belangrijk:
+    • Geef alleen de feedback (geen samenvatting van de data).
+    • Houd de toon positief en gericht op het ondersteunen van de trainer in het optimaliseren van de training.
+
+--- Trainingsoverzicht Start ---
+{summary_text}
+--- Trainingsoverzicht Einde ---
+"""
+    else:
+        prompt = f"""
 You are an equine sports scientist. Based on the horse's training data, write a short and helpful feedback message for the trainer. Use a professional and supportive tone.
 
 The data includes:
@@ -44,7 +81,6 @@ Trainer Feedback:
 """
 
     ollama_path = get_ollama_path()
-
     result = subprocess.run(
         [ollama_path, "run", "gemma:7b"],
         input=prompt.encode(),

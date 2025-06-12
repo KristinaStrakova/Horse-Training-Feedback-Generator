@@ -31,7 +31,7 @@ def plot_grouped_bars(data, categories, title, ylabel, save_path, zone_shading=N
     plt.savefig(save_path)
     plt.close()
 
-def plot_training_summary_bars(df_horse, output_dir, horse_id):
+def plot_training_summary_bars(df_horse, output_dir, horse_id, is_dutch=False):
     gaits = ["walk", "trot", "canter", "galop"]
     df_horse = df_horse.sort_values("Date")
     df_recent = df_horse.tail(7)
