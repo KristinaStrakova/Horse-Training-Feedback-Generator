@@ -1,15 +1,31 @@
+
+
+{% if error_message %}
+    <p style="color: #FF5C5C; font-weight: bold; text-align: center;">{{ error_message }}</p>
+{% endif %}
+
+
 {% if selected_horse_id %}
     <h2 class="horse-heading">Results for Horse ID: {{ selected_horse_id }}</h2>
 {% endif %}
 
-{% if feedback %}
+{% if feedback and personalized_feedback %}
+<div class="feedback-grid">
     <div id="feedback-section" class="card">
         <label>Feedback:</label>
         <pre id="feedback" class="output-box">{{ feedback | safe }}</pre>
     </div>
+
+    <div id="personalized-feedback-section" class="card">
+        <label>Personalized Feedback:</label>
+        <pre id="personalized-feedback" class="output-box">{{ personalized_feedback | safe }}</pre>
+    </div>
+</div>
 {% endif %}
 
-{% if feedback %}
+
+
+{% if feedback or personalized_feedback %}
     <div style="text-align: center;">
         <div class="view-toggle">
             <label for="view-mode">View Mode:</label>
@@ -20,6 +36,7 @@
         </div>
     </div>
 {% endif %}
+
 
 <div id="graph-section" style="display: block;">
     {% if chart_path %}

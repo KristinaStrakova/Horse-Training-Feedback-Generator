@@ -1,6 +1,21 @@
 import subprocess
 import shutil
 import os
+from personalized_prompts import get_personalized_prompt
+
+# Utility to resolve Ollama CLI path
+def get_ollama_path():
+    ollama_path = shutil.which("ollama")
+
+    if not ollama_path:
+        fallback_path = r"C:\Users\riste\AppData\Local\Programs\Ollama\ollama.exe"
+        if os.path.exists(fallback_path):
+            ollama_path = fallback_path
+        else:
+            raise FileNotFoundError("Ollama is not installed or not found in system PATH.")
+
+    return ollama_path
+
 
 def generate_local_feedback(summary_text):
     prompt = f"""
@@ -21,7 +36,6 @@ Guidelines:
 
 Provide only the feedback with explanations. No summaries.
 
-
 --- Training Summary Start ---
 {summary_text}
 --- Training Summary End ---
@@ -29,23 +43,30 @@ Provide only the feedback with explanations. No summaries.
 Trainer Feedback:
 """
 
-    # Try to find the 'ollama' executable in the system's PATH
-    ollama_path = shutil.which("ollama")
+    ollama_path = get_ollama_path()
 
-    # If not found, fallback to a known path (adjust as needed for others)
-    if not ollama_path:
-        fallback_path = r"C:\Users\riste\AppData\Local\Programs\Ollama\ollama.exe"
-        if os.path.exists(fallback_path):
-            ollama_path = fallback_path
-        else:
-            raise FileNotFoundError("Ollama is not installed or not found in system PATH.")
-
-    # Run Mistral model via Ollama CLI
     result = subprocess.run(
         [ollama_path, "run", "gemma:7b"],
         input=prompt.encode(),
         stdout=subprocess.PIPE
     )
 
-    output = result.stdout.decode('utf-8')
-    return output.strip()
+    return result.stdout.decode("utf-8").strip()
+
+
+def generate_personalized_feedback(horse_id, summary_text):
+    prompt_template = get_personalized_prompt(horse_id)
+
+    if not prompt_template:
+        raise ValueError(f"No prompt found for horse ID {horse_id}")
+
+    prompt = prompt_template.format(summary_text=summary_text)
+    ollama_path = get_ollama_path()
+
+    result = subprocess.run(
+        [ollama_path, "run", "gemma:7b"],
+        input=prompt.encode(),
+        stdout=subprocess.PIPE
+    )
+
+    return result.stdout.decode("utf-8").strip()

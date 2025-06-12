@@ -230,14 +230,26 @@ pre.output-box {
 }
 
 /* Constrain width of feedback and summary content */
-#feedback,
-#summary {
-    max-width: 800px;   /* adjust if you prefer e.g. 800px */
+#feedback {
+    max-width: none;
     margin: 0 auto;
 }
+
+#summary {
+    width: 100%;
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow-x: auto;
+    font-family: Consolas, monospace;
+    box-sizing: border-box;
+}
+
 #feedback-section,
 #summary-section {
-    max-width: 900px;  /* or whatever width you prefer */
+    max-width: none;  /* or whatever width you prefer */
     margin: 0 auto;
 }
 #loading-indicator {
@@ -247,6 +259,47 @@ pre.output-box {
     font-weight: bold;
     margin: 20px 0;
 }
+
+.feedback-grid {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: stretch;
+    margin-bottom: 30px;
+}
+
+.feedback-grid .card {
+    flex: 1 1 48%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+
+.error-banner {
+    background-color: #ffdddd;
+    color: #a10000;
+    padding: 10px 15px;
+    border: 1px solid #ffaaaa;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.feedback-grid pre.output-box {
+    width: 100%;
+    flex-grow: 1;
+    display: block;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow-x: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
 
 
 

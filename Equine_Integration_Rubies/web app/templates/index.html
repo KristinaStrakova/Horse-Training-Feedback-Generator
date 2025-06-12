@@ -16,6 +16,10 @@
 
             <!-- FORM SECTION -->
             <div class="form-sidebar-wrapper">
+                {% if error_message %}
+                    <div class="error-banner">{{ error_message }}</div>
+                {% endif %}
+
                 <form id="horse-form" method="POST" action="/run_model" class="card narrow-card">
                     <label for="horse-id">Select Horse ID:</label>
                     <select name="horse_id" id="horse-id">
