@@ -1,9 +1,8 @@
 from flask import Flask, render_template, request
-from flask import request, render_template, jsonify
+from flask import request, render_template
 from horse_model import get_all_horse_ids, get_summary_for_horse, get_horse_dataframe
 from model_runner import generate_local_feedback
 from model_runner import  generate_personalized_feedback
-#from utils.summary_plot import plot_training_summary
 from utils.summary_plot_bars import plot_training_summary_bars
 from utils.summary_plot_bars import plot_training_summary_bars
 import os
@@ -89,7 +88,7 @@ def run_model():
                        selected_horse_id=horse_id,
                        selected_horse_name=HORSE_NAME_MAP.get(int(horse_id), horse_id),
                        is_dutch=is_dutch,
-                       HORSE_NAME_MAP=HORSE_NAME_MAP)  # <-- This was missing
+                       HORSE_NAME_MAP=HORSE_NAME_MAP)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
-# web app/personalized_prompts.py
+# Personalized prompts for different horses based on their training data
+# Different horses may require different language styles or formats
 
 def get_personalized_prompt(horse_id):
     prompts = {

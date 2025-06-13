@@ -8,7 +8,7 @@ def get_ollama_path():
     ollama_path = shutil.which("ollama")
 
     if not ollama_path:
-        fallback_path = r"C:\Users\riste\AppData\Local\Programs\Ollama\ollama.exe"
+        fallback_path = r"C:\Users\riste\AppData\Local\Programs\Ollama\ollama.exe" # Adjust this as zour local path if needed
         if os.path.exists(fallback_path):
             ollama_path = fallback_path
         else:
