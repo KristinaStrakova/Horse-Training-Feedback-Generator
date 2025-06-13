@@ -21,12 +21,14 @@
                 {% endif %}
 
                 <form id="horse-form" method="POST" action="/run_model" class="card narrow-card">
-                    <label for="horse-id">Select Horse ID:</label>
+                    <label for="horse-id">Select Horse Name:</label>
                     <select name="horse_id" id="horse-id">
-                        <option value="" disabled selected>-- Select Horse ID --</option>
-                        {% for hid in horse_ids %}
-                            <option value="{{ hid }}">{{ hid }}</option>
+                        <option value="" disabled selected>-- Select Horse Name --</option>
+                       {% for hid in horse_ids %}
+                            {% set name = HORSE_NAME_MAP.get(hid, hid) %}
+                            <option value="{{ hid }}">{{ name }}</option>
                         {% endfor %}
+
                     </select>
                     <button type="submit">Receive feedback</button>
                 </form>
