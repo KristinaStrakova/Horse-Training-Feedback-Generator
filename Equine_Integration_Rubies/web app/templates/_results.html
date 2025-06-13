@@ -16,15 +16,24 @@
 {% if feedback and personalized_feedback %}
 <div class="feedback-grid">
     <div id="feedback-section" class="card">
-        <label>Feedback:</label>
+        {% if is_dutch %}
+            <label>Feedbackbericht:</label>
+        {% else %}
+            <label>Feedback:</label>
+        {% endif %}
         <pre id="feedback" class="output-box">{{ feedback | safe }}</pre>
     </div>
     <div id="personalized-feedback-section" class="card">
-        <label>Personalized Feedback:</label>
+        {% if is_dutch %}
+            <label>Persoonlijke Feedback:</label>
+        {% else %}
+            <label>Personalized Feedback:</label>
+        {% endif %}
         <pre id="personalized-feedback" class="output-box">{{ personalized_feedback | safe }}</pre>
     </div>
 </div>
 {% endif %}
+
 
 {% if feedback or personalized_feedback %}
     <div style="text-align: center;">
