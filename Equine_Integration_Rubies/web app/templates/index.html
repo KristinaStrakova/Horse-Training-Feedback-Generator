@@ -13,62 +13,66 @@
 
     <main class="page-layout">
         <div class="main-container">
-            <!-- Input Form -->
-            <form id="horse-form" method="POST" action="/run_model" class="card">
-                <label for="horse-id">Select Horse ID:</label>
-                <select name="horse_id" id="horse-id">
-                    {% for horse_id in horse_ids %}
-                        <option value="{{ horse_id }}" {% if horse_id == selected_horse_id %}selected{% endif %}>{{ horse_id }}</option>
-                    {% endfor %}
-                </select>
-                <button type="submit">Run Model</button>
-            </form>
 
-            <!-- Output Section -->
-            <div class="card" id="result">
-
-                {% if chart_path %}
-                <div class="chart-container">
-                    <h3>Training Summary Graph</h3>
-                    <img src="{{ url_for('static', filename=chart_path) }}"
-                         alt="Training Summary Chart"
-                         class="training-chart">
-                </div>
+            <!-- FORM SECTION -->
+            <div class="form-sidebar-wrapper">
+                {% if error_message %}
+                    <div class="error-banner">{{ error_message }}</div>
                 {% endif %}
 
-                <label>Summary:</label>
-                <pre id="summary" class="output-box">{{ summary_text or '[Summary will appear here]' }}</pre>
+                <form id="horse-form" method="POST" action="/run_model" class="card narrow-card">
+                    <label for="horse-id">Select Horse Name:</label>
+                    <select name="horse_id" id="horse-id">
+                        <option value="" disabled selected>-- Select Horse Name --</option>
+                       {% for hid in horse_ids %}
+                            {% set name = HORSE_NAME_MAP.get(hid, hid) %}
+                            <option value="{{ hid }}">{{ name }}</option>
+                        {% endfor %}
 
-                <label>Feedback:</label>
-                <pre id="feedback" class="output-box">{{ feedback or '[Feedback will appear here]' }}</pre>
+                    </select>
+                    <button type="submit">Receive feedback</button>
+                </form>
             </div>
-        </div>
 
-        <aside class="sidebar">
-            <section class="instructions">
-                <button class="collapsible">How It Works</button>
-                <div class="content">
-                    <p>This tool allows you to interact with an AI model that analyzes horse training data and returns smart feedback.</p>
-                    <p><strong>Steps:</strong></p>
-                    <ul>
-                        <li>Select a Horse ID from the dropdown</li>
-                        <li>Click "Run Model"</li>
-                        <li>View the generated summary and trainer feedback</li>
-                    </ul>
-                </div>
-            </section>
-        </aside>
+            <!-- LOADING INDICATOR -->
+            <div id="loading-indicator" style="display: none;">Loading... Please wait.</div>
+
+            <!-- RESULTS CONTAINER (replaced dynamically) -->
+            <div id="results-wrapper">
+                {% include "_results.html" %}
+            </div>
+
+        </div>
     </main>
 
     <script>
-    // Toggle collapsible instruction box
-    const collapsible = document.querySelector('.collapsible');
-    const content = document.querySelector('.content');
+        const form = document.getElementById('horse-form');
+        const loading = document.getElementById('loading-indicator');
+        const resultWrapper = document.getElementById('results-wrapper');
 
-    collapsible.addEventListener('click', function () {
-        this.classList.toggle('active');
-        content.style.display = (content.style.display === 'block') ? 'none' : 'block';
-    });
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            loading.style.display = 'block';
+            resultWrapper.innerHTML = '';
+
+            const formData = new FormData(form);
+            const response = await fetch('/run_model', {
+                method: 'POST',
+                body: formData
+            });
+
+            const html = await response.text();
+            resultWrapper.innerHTML = html;
+            loading.style.display = 'none';
+        });
+
+        document.addEventListener('change', function (e) {
+            if (e.target.id === 'view-mode') {
+                const mode = e.target.value;
+                document.getElementById('graph-section').style.display = mode === 'graphs' ? 'block' : 'none';
+                document.getElementById('summary-section').style.display = mode === 'summary' ? 'block' : 'none';
+            }
+        });
     </script>
 </body>
 </html>

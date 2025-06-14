@@ -1,0 +1,136 @@
+{% if error_message %}
+    <p style="color: #FF5C5C; font-weight: bold; text-align: center;">{{ error_message }}</p>
+{% endif %}
+
+{% if selected_horse_name %}
+    <h2 class="horse-heading">
+        {% if is_dutch %}
+            Resultaten voor Paard: {{ selected_horse_name }}
+        {% else %}
+            Results for Horse: {{ selected_horse_name }}
+        {% endif %}
+    </h2>
+{% endif %}
+
+
+{% if feedback and personalized_feedback %}
+<div class="feedback-grid">
+    <div id="feedback-section" class="card">
+        {% if is_dutch %}
+            <label>Feedbackbericht:</label>
+        {% else %}
+            <label>Feedback:</label>
+        {% endif %}
+        <pre id="feedback" class="output-box">{{ feedback | safe }}</pre>
+    </div>
+    <div id="personalized-feedback-section" class="card">
+        {% if is_dutch %}
+            <label>Persoonlijke Feedback:</label>
+        {% else %}
+            <label>Personalized Feedback:</label>
+        {% endif %}
+        <pre id="personalized-feedback" class="output-box">{{ personalized_feedback | safe }}</pre>
+    </div>
+</div>
+{% endif %}
+
+
+{% if feedback or personalized_feedback %}
+    <div style="text-align: center;">
+        <div class="view-toggle">
+            <label for="view-mode">View Mode:</label>
+            <select id="view-mode">
+                <option value="graphs">Graphs</option>
+                <option value="summary">Summary</option>
+            </select>
+        </div>
+    </div>
+{% endif %}
+
+<div id="graph-section" style="display: block;">
+    {% if chart_path %}
+        <div class="chart-grid">
+
+            <div class="chart-block">
+                <h3>
+                    {% if is_dutch %}
+                        Recente 7 Dagen - Belasting per Gang
+                    {% else %}
+                        Recent 7 Days - Load per Gait
+                    {% endif %}
+                </h3>
+                <img src="{{ url_for('static', filename='charts/bars_load_' + selected_horse_id + '.png') }}"
+                     alt="Recent Load Bar Chart" class="training-chart">
+                <p class="chart-explanation">
+                    {% if is_dutch %}
+                        Deze grafiek toont de dagelijkse trainingsbelasting per gang over de afgelopen 7 dagen.
+                    {% else %}
+                        This chart displays daily training load per gait over the past 7 days.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="chart-block">
+                <h3>
+                    {% if is_dutch %}
+                        Recente 7 Dagen - ACWR per Gang
+                    {% else %}
+                        Recent 7 Days - ACWR per Gait
+                    {% endif %}
+                </h3>
+                <img src="{{ url_for('static', filename='charts/bars_acwr_' + selected_horse_id + '.png') }}"
+                     alt="Recent ACWR Bar Chart" class="training-chart">
+                <p class="chart-explanation">
+                    {% if is_dutch %}
+                        Deze grafiek toont de Acute:Chronische Werkbelasting Ratio (ACWR) voor elke gang.
+                    {% else %}
+                        This chart shows the Acute:Chronic Workload Ratio for each gait.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="chart-block">
+                <h3>
+                    {% if is_dutch %}
+                        Gemiddelde Wekelijkse Belasting per Gang (Laatste 5 Weken)
+                    {% else %}
+                        Weekly Avg Load per Gait (Last 5 Weeks)
+                    {% endif %}
+                </h3>
+                <img src="{{ url_for('static', filename='charts/bars_weekly_load_' + selected_horse_id + '.png') }}"
+                    alt="Weekly Load Bar Chart" class="training-chart">
+                <p class="chart-explanation">
+                    {% if is_dutch %}
+                        Deze grafiek toont de gemiddelde wekelijkse trainingsbelasting per gang gedurende de laatste 5 weken.
+                    {% else %}
+                        This chart displays the average training load per gait across the last 5 weeks. Use it to identify long-term trends.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="chart-block">
+                <h3>
+                    {% if is_dutch %}
+                        Gemiddelde Wekelijkse ACWR per Gang (Laatste 5 Weken)
+                    {% else %}
+                        Weekly Avg ACWR per Gait (Last 5 Weeks)
+                    {% endif %}
+                </h3>
+                <img src="{{ url_for('static', filename='charts/bars_weekly_acwr_' + selected_horse_id + '.png') }}"
+                    alt="Weekly ACWR Bar Chart" class="training-chart">
+                <p class="chart-explanation">
+                    {% if is_dutch %}
+                        Deze grafiek toont de gemiddelde ACWR per gang in de afgelopen 5 weken. Dit helpt bij het beoordelen van de trainingsbalans.
+                    {% else %}
+                        This chart shows the average Acute:Chronic Workload Ratio for each gait over the past 5 weeks. Helps assess weekly training balance.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<div id="summary-section" style="display: none;" class="card">
+    <label>Summary:</label>
+    <pre id="summary" class="output-box">{{ summary_text | safe }}</pre>
+</div>
