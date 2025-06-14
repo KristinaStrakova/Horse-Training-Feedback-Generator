@@ -61,7 +61,7 @@ def plot_training_summary_bars(df_horse, output_dir, horse_id, is_dutch=False):
         (1.5, 2.0, 'red', "Overtraind" if is_dutch else "Overtrained"),
     ]
 
-    # 1. Load - 7 days
+    # Load - 7 days
     load_data = []
     for idx, row in df_recent.iterrows():
         entry = {"label": row["Date"].strftime("%Y-%m-%d")}
@@ -77,7 +77,7 @@ def plot_training_summary_bars(df_horse, output_dir, horse_id, is_dutch=False):
         is_dutch=is_dutch
     )
 
-    # 2. ACWR - 7 days
+    # ACWR - 7 days
     acwr_data = []
     for idx, row in df_recent.iterrows():
         entry = {"label": row["Date"].strftime("%Y-%m-%d")}
@@ -99,7 +99,7 @@ def plot_training_summary_bars(df_horse, output_dir, horse_id, is_dutch=False):
     last_weeks = df_horse["Week"].dropna().unique()[-5:]
     df_weekly = df_horse[df_horse["Week"].isin(last_weeks)]
 
-    # 3. Weekly Avg Load
+    # Weekly Avg Load
     weekly_load_data = []
     for week in last_weeks:
         week_str = pd.Timestamp(week).strftime('%Y-%m-%d')
@@ -117,7 +117,7 @@ def plot_training_summary_bars(df_horse, output_dir, horse_id, is_dutch=False):
         is_dutch=is_dutch
     )
 
-    # 4. Weekly Avg ACWR
+    # Weekly Avg ACWR
     weekly_acwr_data = []
     for week in last_weeks:
         week_str = pd.Timestamp(week).strftime('%Y-%m-%d')

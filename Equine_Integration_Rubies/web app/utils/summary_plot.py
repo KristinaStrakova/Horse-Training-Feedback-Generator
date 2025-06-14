@@ -51,7 +51,7 @@ def plot_training_summary_bars(df_horse, output_dir, horse_id, is_dutch=False):
     label_load = "Belasting" if is_dutch else "Load"
     label_acwr = "ACWR"
 
-    # 1. Load chart
+    # Load chart
     load_data = []
     for _, row in df_recent.iterrows():
         entry = {"label": row["Date"].strftime("%Y-%m-%d")}
@@ -66,7 +66,7 @@ def plot_training_summary_bars(df_horse, output_dir, horse_id, is_dutch=False):
         save_path=os.path.join(output_dir, f"bars_load_{horse_id}.png")
     )
 
-    # 2. ACWR chart
+    # ACWR chart
     acwr_data = []
     for _, row in df_recent.iterrows():
         entry = {"label": row["Date"].strftime("%Y-%m-%d")}
@@ -82,7 +82,7 @@ def plot_training_summary_bars(df_horse, output_dir, horse_id, is_dutch=False):
         zone_shading=shading
     )
 
-    # 3. Weekly load
+    # Weekly load
     df_horse["Week"] = df_horse["Date"].dt.to_period("W").apply(lambda r: r.start_time)
     last_weeks = df_horse["Week"].dropna().unique()[-5:]
     df_weekly = df_horse[df_horse["Week"].isin(last_weeks)]
@@ -103,7 +103,7 @@ def plot_training_summary_bars(df_horse, output_dir, horse_id, is_dutch=False):
         save_path=os.path.join(output_dir, f"bars_weekly_load_{horse_id}.png")
     )
 
-    # 4. Weekly ACWR
+    # Weekly ACWR
     weekly_acwr_data = []
     for week in last_weeks:
         week_str = pd.Timestamp(week).strftime('%Y-%m-%d')

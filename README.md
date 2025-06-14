@@ -20,7 +20,7 @@ Before running the project, you need to set up **Ollama** locally.
 
 ---
 
-## 🧠 Setting Up Ollama
+## Setting Up Ollama
 
 ### 1. **Install Ollama**
 
