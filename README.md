@@ -80,3 +80,6 @@ The app will launch and communicate with the local Ollama model on link:
  [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 
+Note: When running the model depends on the PC's GPU the result might take to load from 4 - 15 minutes.
+
+
